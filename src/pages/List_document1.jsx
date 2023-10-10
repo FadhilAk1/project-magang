@@ -1,71 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../components/navbar';
 import { Link } from 'react-router-dom';
+import AppURL from '../api/AppURL';
+import axios from 'axios'; // You might need to install this library
 
 function List_document1() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [documentType, setDocumentType] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [documentType, setDocumentType] = useState("");
 
-  // Sample data for the table
-  const tableData = [
-    {
-      no: 1,
-      documentType: 'Authority',
-      date: '2023-09-21',
-      perihal: 'Sample Perihal 1',
-      noSurat: '12345',
-      scanDocument: 'sample1.pdf',
-    },
-    {
-      no: 2,
-      documentType: 'Justification',
-      date: '2023-09-22',
-      perihal: 'Sample Perihal 2',
-      noSurat: '54321',
-      scanDocument: 'sample2.pdf',
-    },
-    {
-      no: 2,
-      documentType: 'Justification',
-      date: '2023-09-22',
-      perihal: 'Sample Perihal 2',
-      noSurat: '54321',
-      scanDocument: 'sample2.pdf',
-    },
-    {
-      no: 2,
-      documentType: 'Justification',
-      date: '2023-09-22',
-      perihal: 'Sample Perihal 2',
-      noSurat: '54321',
-      scanDocument: 'sample2.pdf',
-    },
-    {
-      no: 2,
-      documentType: 'Justification',
-      date: '2023-09-22',
-      perihal: 'Sample Perihal 2',
-      noSurat: '54321',
-      scanDocument: 'sample2.pdf',
-    },
-    {
-      no: 2,
-      documentType: 'Justification',
-      date: '2023-09-22',
-      perihal: 'Sample Perihal 2',
-      noSurat: '54321',
-      scanDocument: 'sample2.pdf',
-    },
-    // Add more data entries as needed
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const queryParams = new URLSearchParams({
+          start_date: startDate,
+          end_date: endDate,
+          document_type: documentType,
+        });
 
-  const handleSearch = () => {
-    // Implement your search logic here based on the state values.
-    // You can use searchQuery, documentType, startDate, endDate, and xlsSelected.
-    // For example, you can send an API request to fetch data.
-  };
+        const response = await axios.get(`${AppURL.Documents}?${queryParams.toString()}`);
+        // const response = await axios.get(AppURL.Documents);
+        if (response.data && Array.isArray(response.data.surat)) {
+          setData(response.data.surat); // Gunakan properti "surat" dari respons API
+        } else {
+          console.error('Unexpected API response:', response.data);
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setIsLoading(false);
+      }
+    };
+  
+    fetchData(); // Panggil fungsi fetchData() untuk mengambil data dari API
+  }, []);
+
+  if(!localStorage.getItem('token')){
+    return window.location.href = '/login';
+  }
+  
 
   return (
     <>
@@ -81,15 +56,14 @@ function List_document1() {
               type="text"
               className='p-3 pl-4 w-5/12 h-12 bg-[#ECECEC]'
               placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              
             />
             <select
               className='flex items-center justify-center w-2/12 h-12 bg-[#D9D9D9] p-2'
               value={documentType}
               onChange={(e) => setDocumentType(e.target.value)}
             >
-              <option value="">Document Type</option>
+              <option value="">All</option>
               <option value="authority">Authority</option>
               <option value="justification">Justification</option>
               <option value="contract">Contract</option>
@@ -111,7 +85,9 @@ function List_document1() {
             />
             <button
               className='bg-[#197B80] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
-              onClick={handleSearch}
+              onClick={() => {
+                window.location.href = AppURL.Export;
+              }}
             >
               XLS
             </button>
@@ -125,22 +101,34 @@ function List_document1() {
                   <th className='text-center p-4 w-20 sm:w-32 md:w-40 lg:w-48'>Date</th>
                   <th className='text-center p-4 w-20 sm:w-32 md:w-40 lg:w-48'>Perihal</th>
                   <th className='text-center p-4 w-20 sm:w-32 md:w-40 lg:w-48'>No. Surat</th>
+                  <th className='text-center p-4 w-20 sm:w-32 md:w-40 lg:w-48'>Jumlah</th>
                   <th className='text-center p-4 w-20 sm:w-32 md:w-40 lg:w-48'>Scan (Document)</th>
                   <th className='text-center p-4 w-20 sm:w-32 md:w-40 lg:w-48'>Action</th>
                 </tr>
               </thead>
               <tbody >
-                {tableData.map((item, index) => (
+              {isLoading ? (
+                <tr>
+                  <td>Loading data...</td>
+                </tr>
+              ) : (
+                data.map((item, index) => (
                   <tr key={index} className='border-b border-gray-300'>
-                    <td className='text-center p-4'>{item.no}</td>
-                    <td className='text-center p-4'>{item.documentType}</td>
-                    <td className='text-center p-4'>{item.date}</td>
+                    <td className='text-center p-4'>{item.nomor}</td>
+                    <td className='text-center p-4'>{item.document_type}</td>
+                    <td className='text-center p-4'>{item.tanggal}</td>
                     <td className='text-center p-4'>{item.perihal}</td>
-                    <td className='text-center p-4'>{item.noSurat}</td>
+                    <td className='text-center p-4'>{item.nomor_surat}</td>
+                    <td className='text-center p-4'>{item.jumlah}</td>
                     <td className='text-center p-4'>
-                      <a href={item.scanDocument} target="_blank" rel="noopener noreferrer">
-                        View
-                      </a>
+                    <a
+                      href={AppURL.view(item.id)} // Assuming 'id' is the ID of the PDF you want to view
+                      target="_blank"
+                      rel="noopener noreferrer"
+
+                    >
+                      View
+                    </a>
                     </td>
                     <td className='text-center'>
                     <i className='fas fa-edit text-blue-500'></i> {/* Edit Icon */}
@@ -148,7 +136,8 @@ function List_document1() {
                     <i className='fas fa-download text-green-500'></i> {/* Download Icon */}
                     </td>
                   </tr>
-                ))}
+                  ))
+                )}
               </tbody>
             </table>
         </div>

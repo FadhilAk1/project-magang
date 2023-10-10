@@ -4,6 +4,8 @@ import Background from '../image/backor3.jpg';
 import { Link } from 'react-router-dom';
 
 function Homepage() {
+
+  
   return (
     <div className="bg">
       <img src={Background} className="absolute right-0 top-0" alt=""/>

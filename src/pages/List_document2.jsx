@@ -8,6 +8,10 @@ function List_document2() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  if(!localStorage.getItem('token')){
+    return window.location.href = '/login';
+  }
+
   // Sample data for the table
   const tableData = [
     {

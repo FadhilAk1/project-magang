@@ -50,6 +50,10 @@ function Navbar() {
     setIsDropdown1Open(false);
   };
 
+  const logout = () => {
+    localStorage.clear();
+  }
+
   return (
     <>
       <header className="flex sticky-header">
@@ -95,7 +99,7 @@ function Navbar() {
                   <ul className="list-none p-2">
                     <li><Link to="/profile">Profile</Link></li>
                     <li><Link to="/list_letterin">Document</Link></li>
-                    <li><Link to="/">Log out</Link></li>
+                    <li><Link onClick={logout} to="/">Log out</Link></li>
                   </ul>
                 </div>
               )}
@@ -147,7 +151,7 @@ function Navbar() {
                       <Link to="/list_letterin" className='h-10 w-32 flex items-center justify-center'>Document</Link>
                     </li>
                     <li>
-                      <Link to="/" className='h-10 w-32 flex items-center justify-center'>Log out</Link>
+                      <Link to="/" onClick={logout} className='h-10 w-32 flex items-center justify-center'>Log out</Link>
                     </li>
                   </ul>
                 </div>

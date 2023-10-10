@@ -1,8 +1,12 @@
 import React from 'react'
 import Navbar from '../components/navbar'
 import profilImage from '../image/profile.png'
+import { useHistory } from 'react-router-dom';
 
 function Profil() {
+    if(!localStorage.getItem('token')){
+        return window.location.href = '/login';
+      }
   return (
     <>
         <div className="min-h-screen flex flex-col">

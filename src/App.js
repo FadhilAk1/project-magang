@@ -15,8 +15,10 @@ import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import Homepage_login from './pages/homepage_login';
 import List_document1 from './pages/List_document1';
 import List_document2 from './pages/List_document2';
+import DocumentView from './pages/DocumentView';
 
 function App() {
+  
   return (
     <Router>
       <Routes>
@@ -32,6 +34,7 @@ function App() {
         <Route path='/letterout2' element={<Letter_out2/>}/>
         <Route path='/letterout3' element={<Letter_out3/>}/>
         <Route path='/letterout4' element={<Letter_out4/>}/>
+        <Route path="/file/:fileId" element={<DocumentView />} />
       </Routes>
     </Router>
   );

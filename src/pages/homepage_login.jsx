@@ -10,6 +10,15 @@ function Homepage_login() {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  if(!localStorage.getItem('token')){
+    return window.location.href = '/login';
+  }
+
+  const logout = () => {
+    localStorage.clear();
+  }
+  
   return (
     <div className="bg">
       <img src={Background} className="absolute right-0 top-0" alt=""/>
@@ -49,7 +58,7 @@ function Homepage_login() {
                       <Link to="/list_letterin">Document</Link>
                     </li>
                     <li>
-                      <Link to='/'><button type='submit'>Logout</button>
+                      <Link onClick={logout} to='/'>Logout
                       </Link>
                     </li>
                   </ul>

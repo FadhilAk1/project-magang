@@ -1,7 +1,12 @@
 import React from 'react'
 import Navbar from '../components/navbar'
 
+
 function Letterin() {
+
+    if(!localStorage.getItem('token')){
+        return window.location.href = '/login';
+      }
   return (
     <div className='min-h-screen flex flex-col'>
         <Navbar/>
